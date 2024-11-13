@@ -1,0 +1,59 @@
+
+#Example fullerene + graphene
+
+units                   real
+atom_style              charge
+
+read_data               ./runs/test_1/vel_0.02_temp_300/combined.data
+
+comm_style      brick
+fix             bal all balance 1000 1.05 shift xyz 5 1.05
+
+group C60 type 1
+group graphene type 2
+group edges type 3
+
+set group C60 type 1
+set group edges type 1
+set group graphene type 1
+
+pair_style              reaxff NULL
+pair_coeff              * * ffield_reax.cho2016 C C C
+fix                     chg all qeq/reax 1 0.0 10.0 1.0e-6 reaxff
+
+thermo_style    custom  step time temp pe ke etotal press vol
+thermo          100
+
+dump            1 all cfg 100 ./runs/test_1/vel_0.02_temp_300/all.*.cfg mass type xs ys zs
+dump            2 all custom 100 ./runs/test_1/vel_0.02_temp_300/all.*.pos id type x y z vx vy vz
+
+compute         coord all coord/atom cutoff 1.8
+dump            3 graphene custom 100  ./runs/test_1/vel_0.02_temp_300/pos/graphene.*.pos id type x y z vx vy vz c_coord
+dump            4 C60 custom 100  ./runs/test_1/vel_0.02_temp_300/pos/c60.*.pos id type x y z vx vy vz c_coord
+
+fix relax graphene box/relax aniso 0.0
+min_style       cg
+minimize        1.0e-16 1.0e-8 15000 30000
+unfix relax
+
+timestep        0.1
+
+fix 01 edges setforce 0 0 0
+
+# Run 1 - NVT ensemble
+fix 1 all nvt temp 10 300 10
+run             1000
+
+unfix    1
+fix    2 all nvt temp 300 300 10
+run    1000
+
+unfix    2
+fix    3 all nve
+
+timestep    0.1
+velocity C60 set 0. 0. 0.02
+run    2000
+
+timestep    0.05
+run    50000

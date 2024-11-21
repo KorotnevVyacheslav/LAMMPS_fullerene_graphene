@@ -87,7 +87,7 @@ def get_plots_coords_velocities(df, name='default'):
 
     plt.tight_layout()
     plt.savefig(name + '_coordinates_plot.png', dpi=300, bbox_inches='tight') 
-    plt.show()
+    #plt.show()
     
     
     plt.figure(figsize=(12, 8))
@@ -115,7 +115,7 @@ def get_plots_coords_velocities(df, name='default'):
 
     plt.tight_layout()
     plt.savefig(name + '_velocities_plot.png', dpi=300, bbox_inches='tight') 
-    plt.show()
+    #plt.show()
     
     
     plt.figure(figsize=(12, 8))
@@ -128,9 +128,9 @@ def get_plots_coords_velocities(df, name='default'):
 
     plt.tight_layout()
     plt.savefig(name + '_connections_plot.png', dpi=300, bbox_inches='tight') 
-    plt.show()
+    #plt.show()
 
-def is_broken(df, alpha = 0.05):
+def is_broken_graphene(df, alpha = 0.05):
     std_c = df['c'].std()
     mean_c = df['c'].mean()
 
@@ -143,4 +143,8 @@ def is_broken(df, alpha = 0.05):
     
     return False
     
-    
+def is_broken_c60_coords(df, z = 20):
+    if ((df['z'] > 20) & (df['vz'] > 0)).any():
+        return True
+    else:
+        return False

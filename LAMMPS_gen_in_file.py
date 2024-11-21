@@ -30,9 +30,10 @@ fix                     chg all qeq/reax 1 0.0 10.0 1.0e-6 reaxff
 
 thermo_style    custom  step time temp pe ke etotal press vol
 thermo          100
+log             {dump_dir}/log.lammps
 
-dump            1 all cfg 100 {dump_dir}/all.*.cfg mass type xs ys zs
-dump            2 all custom 100 {dump_dir}/all.*.pos id type x y z vx vy vz
+dump            1 all cfg 100 {dump_dir}/all/all.*.cfg mass type xs ys zs
+dump            2 all custom 100 {dump_dir}/all/all.*.pos id type x y z vx vy vz
 
 compute         coord all coord/atom cutoff 1.8
 dump            3 graphene custom 100  {dump_dir}/pos/graphene.*.pos id type x y z vx vy vz c_coord
@@ -58,11 +59,11 @@ run    {it2}
 unfix    2
 fix    3 all nve
 
-timestep    {ts2}
+timestep    {ts3}
 velocity C60 set 0. 0. {velocity}
 run    {it3}
 
-timestep    {ts[2]}
+timestep    {ts3}
 run    {it4}
 """
     return lammps_script
@@ -73,14 +74,15 @@ def generate_in_file(velocity, temperature, dump_dir='data', output_file = 'in.p
     
     a = 1
     
-    ts[2] = min(ts[2], round(0.001 * a / abs(velocity), 3))  
+    #ts[2] = min(ts[2], round(0.001 * a / abs(velocity), 4))  
 
-    iterations[2] = max(int(abs(4/velocity/ts[1])), iterations[2])
-    iterations[3] = max(int(abs(50/velocity/ts[2])), iterations[3])
+    #iterations[2] = max(int(abs(4/velocity/ts[1])), iterations[2])
+    #iterations[3] = max(int(abs(50/velocity/ts[2])), iterations[3])
     
     try:
         os.mkdir(dump_dir)
         os.mkdir(dump_dir + '/pos')
+        os.mkdir(dump_dir + '/all')
     except FileExistsError:
         print('Folders already exist')
         

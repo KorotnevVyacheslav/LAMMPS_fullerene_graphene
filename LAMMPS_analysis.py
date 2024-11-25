@@ -144,7 +144,7 @@ def is_broken_graphene(df, alpha = 0.05):
     return False
     
 def is_broken_c60_coords(df, z = 20):
-    if ((df['z'] > 20) & (df['vz'] > 0)).any():
+    if ((df['z'] > z) & (df['vz'] > 0)).any():
         return True
     else:
         return False

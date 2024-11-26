@@ -9,8 +9,13 @@ def get_files(folder_path, el='gr'):
     pos_files = glob.glob(os.path.join(folder_path, '**', el + '*.pos'), recursive=True)
 
     return pos_files
+def count_data(filepath, bool_graphene=False, r=4):
+    def condition(x, y, z, r = 4):
+        if x**2 + y**2 <= r**2:
+            return True
+        return False
 
-def count_data(filepath):
+
     coordinates = []
 
     with open(filepath, 'r') as file:
@@ -36,7 +41,11 @@ def count_data(filepath):
                         c = float(parts[8])
                     else:
                         c = -1
-                    coordinates.append([x, y, z, vx, vy, vz, c])
+                    if bool_graphene:
+                        if (condition(x, y, z, r=r)):
+                            coordinates.append([x, y, z, vx, vy, vz, c])
+                    else:
+                        coordinates.append([x, y, z, vx, vy, vz, c])
                     
 
     coordinates = np.array(coordinates)
@@ -49,11 +58,11 @@ def count_data(filepath):
     return np.append(mean_coordinates, timestep)
 
 
-def get_dataset(pos_files):
+def get_dataset(pos_files, bool_graphene=False, r=4):
     data = []
 
     for filepath in pos_files:
-        data.append(count_data(filepath))
+        data.append(count_data(filepath, bool_graphene=bool_graphene, r=r))
 
     df = pd.DataFrame(data, columns=['x', 'y', 'z', 'vx', 'vy', 'vz', 'c', 'Step'])
 

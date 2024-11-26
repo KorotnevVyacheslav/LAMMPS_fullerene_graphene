@@ -5,7 +5,7 @@ LAMMPS (29 Aug 2024)
 units                   real
 atom_style              charge
 
-read_data               ./runs/test_1/vel_1.0_temp_325/combined.data
+read_data               ./runs/test_1/vel_1.0_temp_300/combined.data
 Reading data file ...
   orthogonal box = (-14.674074 -12.705456 -50) to (15.015926 12.659909 100)
   1 by 1 by 1 MPI processor grid
@@ -39,4 +39,4 @@ fix                     chg all qeq/reax 1 0.0 10.0 1.0e-6 reaxff
 
 thermo_style    custom  step time temp pe ke etotal press vol
 thermo          100
-log             ./runs/test_1/vel_1.0_temp_325/log.lammps
+log             ./runs/test_1/vel_1.0_temp_300/log.lammps
